@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build: ./backend
+    build: ./ahmadtrafikkonsult v1/backend
     ports:
       - "3001:3001"
     environment:
@@ -27,7 +27,7 @@ services:
       - db
 
   frontend:
-    build: ./frontend
+    build: ./ahmadtrafikkonsult v1/frontend
     ports:
       - "3948:3000"
     depends_on:
