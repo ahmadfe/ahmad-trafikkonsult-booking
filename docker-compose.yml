@@ -2,34 +2,73 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:15
+    image: postgres:17
+    container_name: ahmadtrafikkonsult-db
+    hostname: ahmadtrafikkonsult-db
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "ahmad_trafikkonsult", "-U", "postgres"]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    volumes:
+      - /volume1/docker/ahmadtrafikkonsult/db:/var/lib/postgresql/data:rw
     environment:
+      TZ: Europe/Stockholm
       POSTGRES_DB: ahmad_trafikkonsult
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
       - "5472:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    restart: on-failure:5
 
   backend:
     build: ./ahmadtrafikkonsult v1/backend
+    container_name: ahmadtrafikkonsult-backend
+    hostname: ahmadtrafikkonsult-backend
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
     ports:
       - "3001:3001"
     environment:
+      TZ: Europe/Stockholm
+      NODE_ENV: production
       DB_HOST: db
       DB_PORT: 5472
       DB_USERNAME: postgres
       DB_PASSWORD: password
       DB_NAME: ahmad_trafikkonsult
       JWT_SECRET: your_jwt_secret
+    restart: on-failure:5
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   frontend:
     build: ./ahmadtrafikkonsult v1/frontend
+    container_name: ahmadtrafikkonsult-frontend
+    hostname: ahmadtrafikkonsult-frontend
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
     ports:
       - "3948:3000"
+    environment:
+      TZ: Europe/Stockholm
+      NODE_ENV: production
+    restart: on-failure:5
     depends_on:
       - backend
 
