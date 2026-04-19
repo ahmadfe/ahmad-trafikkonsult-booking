@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build: ../backend
+    build: ./backend
     ports:
       - "3001:3001"
     environment:
@@ -27,7 +27,7 @@ services:
       - db
 
   frontend:
-    build: ../frontend
+    build: ./frontend
     ports:
       - "3000:3000"
     depends_on:
