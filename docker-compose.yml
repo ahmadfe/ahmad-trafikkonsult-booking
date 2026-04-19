@@ -24,7 +24,7 @@ services:
     restart: on-failure:5
 
   backend:
-    build: ./ahmadtrafikkonsult v1/backend
+    build: "./ahmadtrafikkonsult v1/backend"
     container_name: ahmadtrafikkonsult-backend
     hostname: ahmadtrafikkonsult-backend
     security_opt:
@@ -52,7 +52,7 @@ services:
         condition: service_healthy
 
   frontend:
-    build: ./ahmadtrafikkonsult v1/frontend
+    build: "./ahmadtrafikkonsult v1/frontend"
     container_name: ahmadtrafikkonsult-frontend
     hostname: ahmadtrafikkonsult-frontend
     security_opt:
